@@ -113,7 +113,7 @@ jobs:
           ACTIVE_RELEASE_PATH: ${{ vars.PATH }}/current
           STORAGE_PATH: ${{ vars.PATH }}/storage
           BASE_PATH: ${{ vars.PATH }}
-          LARAVEL_ENV: ${{ secret.LARAVEL_ENV }}
+          LARAVEL_ENV: ${{ secrets.LARAVEL_ENV }}
         with:
           host: ${{ secrets.HOST }}
           username: ${{ secrets.USERNAME }}
