@@ -100,29 +100,29 @@ jobs:
 #         script: |
 #           ${{vars.beforeHooks}}
 
-Active-release:
-  name: "${{vars.PATH}}: Active release"
-  runs-on: ubuntu-latest
-  needs: [create-deployment-artifacts, prepare-release-on-server]
-  steps:
-    - name: Active release
-      uses: appleboy/ssh-action@master
-      env:
-        GITHUB_SHA: ${{ github.sha }}
-        RELEASE_PATH: ${{ vars.PATH }}/releases/${{ github.sha }}
-        ACTIVE_RELEASE_PATH: ${{ vars.PATH }}/current
-        STORAGE_PATH: ${{ vars.PATH }}/storage
-        BASE_PATH: ${{ vars.PATH }}
-        LARAVEL_ENV: ${{ secret.LARAVEL_ENV }}
-      with:
-        host: ${{ secrets.HOST }}
-        username: ${{ secrets.USERNAME }}
-        key: ${{ secrets.KEY }}
-        port: ${{ secrets.PORT }}
-        envs: GITHUB_SHA,RELEASE_PATH,ACTIVE_RELEASE_PATH,STORAGE_PATH,BASE_PATH
-        script: |
-          printf "%s" "$LARAVEL_ENV" > "${BASE_PATH}/.env"
-          ln -s -n -f $BASE_PATH/.env $RELEASE_PATH
-          ln -s -n -f $STORAGE_PATH $RELEASE_PATH
-          ln -s -n -f $RELEASE_PATH $ACTIVE_RELEASE_PATH
-          service php-8.3-fpm reload
+  Active-release:
+    name: "${{vars.PATH}}: Active release"
+    runs-on: ubuntu-latest
+    needs: [create-deployment-artifacts, prepare-release-on-server]
+    steps:
+      - name: Active release
+        uses: appleboy/ssh-action@master
+        env:
+          GITHUB_SHA: ${{ github.sha }}
+          RELEASE_PATH: ${{ vars.PATH }}/releases/${{ github.sha }}
+          ACTIVE_RELEASE_PATH: ${{ vars.PATH }}/current
+          STORAGE_PATH: ${{ vars.PATH }}/storage
+          BASE_PATH: ${{ vars.PATH }}
+          LARAVEL_ENV: ${{ secret.LARAVEL_ENV }}
+        with:
+          host: ${{ secrets.HOST }}
+          username: ${{ secrets.USERNAME }}
+          key: ${{ secrets.KEY }}
+          port: ${{ secrets.PORT }}
+          envs: GITHUB_SHA,RELEASE_PATH,ACTIVE_RELEASE_PATH,STORAGE_PATH,BASE_PATH
+          script: |
+            printf "%s" "$LARAVEL_ENV" > "${BASE_PATH}/.env"
+            ln -s -n -f $BASE_PATH/.env $RELEASE_PATH
+            ln -s -n -f $STORAGE_PATH $RELEASE_PATH
+            ln -s -n -f $RELEASE_PATH $ACTIVE_RELEASE_PATH
+            service php-8.3-fpm reload
