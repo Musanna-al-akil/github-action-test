@@ -5,7 +5,6 @@ on:
     branches:
       - main
 
-
 jobs:
   create-deployment-artifacts:
     name: Create deployment artifacts
@@ -14,7 +13,7 @@ jobs:
       - uses: actions/checkout@v4
       - uses: actions/setup-node@v4
         with:
-          node-version: '22'
+          node-version: "22"
 
       - name: compile CSS and Javascript
         run: |
@@ -34,13 +33,12 @@ jobs:
         env:
           GITHUB_SHA: ${{github.sha}}
         run: tar -czf "${GITHUB_SHA}".tar.gz --exclude=*.git --exclude=node_modules *
-      
+
       - name: Store artifact for distribution
         uses: actions/upload-artifact@v4
         with:
           name: app-build
           path: ${{ github.sha }}.tar.gz
-
 
   prepare-release-on-server:
     runs-on: ubuntu-latest
@@ -58,5 +56,23 @@ jobs:
           key: ${{ secrets.KEY }}
           port: ${{ secrets.PORT }}
           source: ${{ github.sha }}.tar.gz
-          target: ${{ vars.PATH }}/artifacts 
+          target: ${{ vars.PATH }}/artifacts
 
+      - name: Extract archive and create directiories
+        uses: appleboy/ssh-action@master
+        env:
+          GITHUB_SHA: $${{ github.sha }}
+        with:
+          host: ${{ secrets.HOST }}
+          username: ${{ secrets.USERNAME }}
+          key: ${{ secrets.KEY }}
+          port: ${{ secrets.PORT }}
+          envs: GITHUB_SHA
+          scripts: |
+            mkdir -p "${{ vars.PATH }}/releases/${GITHUB_SHA}"
+            tar xzf ${{ vars.PATH }}/artifacts/${GITHUB_SHA}.tar.gz -C "${{ vars.PATH }}/releases/${GITHUB_SHA}"
+
+            rm -rf ${{ vars.PATH }}/releases/${GITHUB_SHA}/storage
+            mkdir -p ${{ vars.PATH }}/storage/{app,public,framework,logs}
+            mkdir -p ${{ vars.PATH }}/storage/framework/{cache,sessions,testing,views}
+            chmod -R 0777 ${{ vars.PATH }}/storage
