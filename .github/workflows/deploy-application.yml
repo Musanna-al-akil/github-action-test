@@ -58,5 +58,5 @@ jobs:
           key: ${{ secrets.KEY }}
           port: ${{ secrets.PORT }}
           source: ${{ github.sha }}.tar.gz
-          target: ${{ secrets.PATH }}/artifacts // /var/www/html/artifacts
+          target: ${{ env.PATH }}/artifacts 
 
