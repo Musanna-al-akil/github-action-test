@@ -68,7 +68,7 @@ jobs:
           key: ${{ secrets.KEY }}
           port: ${{ secrets.PORT }}
           envs: GITHUB_SHA
-          scripts: |
+          script: |
             mkdir -p "${{ vars.PATH }}/releases/${GITHUB_SHA}"
             tar xzf ${{ vars.PATH }}/artifacts/${GITHUB_SHA}.tar.gz -C "${{ vars.PATH }}/releases/${GITHUB_SHA}"
 
