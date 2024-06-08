@@ -126,4 +126,3 @@ jobs:
             ln -s -n -f $STORAGE_PATH $RELEASE_PATH
             ln -s -n -f $RELEASE_PATH $ACTIVE_RELEASE_PATH
             service php8.3-fpm reload
-            echo "$LARAVEL_ENV"
